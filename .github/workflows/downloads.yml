@@ -1,0 +1,91 @@
+name: Downloads
+
+on: push
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: write
+
+jobs:
+  android_toolchain:
+    runs-on: ubuntu-latest
+    env:
+      URL: "https://ci.easyrpg.org/view/Toolchains/job/toolchain-android/80/artifact/android_toolchain.tar.gz"
+      PRE_NAME: "android_toolchain-20250523.tar.gz"
+      REL_NAME: "android_toolchain.tar.gz"
+    steps:
+      - name: Download
+        run: |
+          aria2c -o "${{ env.PRE_NAME }}" "${{ env.URL }}" && mv "${{ env.PRE_NAME }}" "${{ env.REL_NAME }}"
+      - name: Create Github Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "${{ env.REL_NAME }}"
+          replacesArtifacts: false
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  emscripten_toolchain:
+    runs-on: ubuntu-latest
+    env:
+      URL: "https://ci.easyrpg.org/view/Toolchains/job/toolchain-emscripten/320/artifact/emscripten/emscripten_toolchain.tar.gz"
+      PRE_NAME: "emscripten_toolchain-20250523.tar.gz"
+      REL_NAME: "emscripten_toolchain.tar.gz"
+    steps:
+      - name: Download
+        run: |
+          aria2c -o "${{ env.PRE_NAME }}" "${{ env.URL }}" && mv "${{ env.PRE_NAME }}" "${{ env.REL_NAME }}"
+      - name: Create Github Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "${{ env.REL_NAME }}"
+          replacesArtifacts: false
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  macos_toolchain:
+    runs-on: ubuntu-latest
+    env:
+      URL: "https://ci.easyrpg.org/view/Toolchains/job/macos-toolchain/115/artifact/macos_toolchain.tar.gz"
+      PRE_NAME: "macos_toolchain-20250524.tar.gz"
+      REL_NAME: "macos_toolchain.tar.gz"
+    steps:
+      - name: Download
+        run: |
+          aria2c -o "${{ env.PRE_NAME }}" "${{ env.URL }}" && mv "${{ env.PRE_NAME }}" "${{ env.REL_NAME }}"
+      - name: Create Github Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "${{ env.REL_NAME }}"
+          replacesArtifacts: false
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  vcpkg_toolchain:
+    runs-on: ubuntu-latest
+    env:
+      URL: "https://ci.easyrpg.org/view/Toolchains/job/toolchain-windows/115/artifact/windows/vcpkg/vcpkg-export-20250424-172626.zip"
+      PRE_NAME: "vcpkg_toolchain-20250424.zip"
+      REL_NAME: "vcpkg_toolchain.zip"
+    steps:
+      - name: Download
+        run: |
+          aria2c -o "${{ env.PRE_NAME }}" "${{ env.URL }}" && mv "${{ env.PRE_NAME }}" "${{ env.REL_NAME }}"
+      - name: Create Github Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "${{ env.REL_NAME }}"
+          replacesArtifacts: false
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
